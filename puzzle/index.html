@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="./jquery_modal.css">
+		<meta charset="utf-8">
+		<style>
+
+			@import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
+
+			*{
+				padding:0px;
+				margin:0px;  
+			}
+
+			html, body {
+				font-family: 'Jeju Gothic', sans-serif;
+			}
+
+			html {
+  			height: 100vh;
+			}
+			body {
+ 				min-height: 100vh;
+			}
+
+			#setting-container {
+				position: fixed;
+				background-color: #eeeeee;
+				height: 60px;
+				width: 150px;
+				left: 50px;
+				bottom: 160px;
+				border-radius: 5px;
+			}
+
+			.setting-container-option {
+				display: none;
+			}
+
+			.b {
+  				display: block;
+			}
+
+			#toggleShadowText {
+				position: absolute;
+				top: 22px;
+				left: 30px;
+			}
+
+			.toggle {
+			  position: absolute;
+			  top: 50%;
+			  right: 45px;
+			  width: 30px;
+			  height: 20px;
+			  border-radius: 50px;
+			  background-color: #ddd;
+			  margin: -10px -20px;
+			  overflow: hidden;
+			  box-shadow: inset 0 0 1px 0.5px rgba(0,0,0,.05);
+			}
+
+			.check {
+			  position: absolute;
+			  display: block;
+			  cursor: pointer;
+			  top: 0;
+			  left: 0;
+			  width: 100%;
+			  height: 100%;
+			  opacity: 0;
+			  z-index: 6;
+			}
+
+			.check:checked ~ .track {
+				box-shadow: inset 0 0 0 10px #039BE5;
+			}
+
+			.check:checked ~ .switch {
+				right: 1px;
+				left: 11px;
+				transition: .35s cubic-bezier(0.785, 0.135, 0.150, 0.860);
+				transition-property: left, right;
+				transition-delay: .05s, 0s;
+			}
+
+			.switch {
+				position: absolute;
+				left: 1px;
+				top: 1px;
+				bottom: 1px;
+				right: 11px;
+				background-color: #fff;
+				border-radius: 18px;
+				z-index: 1;
+				transition: .35s cubic-bezier(0.785, 0.135, 0.150, 0.860);
+				transition-property: left, right;
+				transition-delay: 0s, .05s;
+				box-shadow: 0 0.5px 1px rgba(0,0,0,.2);
+			}
+
+			.track {
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				transition: .35s cubic-bezier(0.785, 0.135, 0.150, 0.860);
+				box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+				border-radius: 40px;
+			}
+
+			#ui-container {
+				position:fixed; 
+
+				width:calc(100% - 100px);
+				height:150px;
+
+				bottom:5px;
+				left:50px;
+
+				background-color:rgba(255, 255, 255, 0.4);
+				border-radius: 5px;
+
+				overflow: scroll;
+				-webkit-transition: height 0.5s; /* Safari */
+    			transition: height 0.5s;
+			}
+
+			#ui-header {
+				position:absolute;
+				background-color: #eeeeee;
+
+				height: 20px;
+				width: 100%;
+
+				color: #616161;
+
+				border-bottom: solid 3px #039BE5;
+			}
+
+			#object-container {
+				padding-left: 20px
+			}
+
+			.object {
+				width: 60px;
+				height: 60px;
+
+				float: left;
+
+				margin-left: 5px;
+				margin-top:33px;
+
+				border-radius: 5px;
+
+				background-color: #eeeeee;
+			}
+
+			.object:hover {
+				box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
+			}
+
+			#ui-header > .fa:hover {
+				color: #424242;
+			}
+
+			#modal {
+				display: none;
+				position: fixed;
+				border-radius: 5px;
+				width: 400px;
+				height: 300px;
+				top: 30%;
+				left: 50%;
+				margin-left: -200px;
+				padding: 0;
+				overflow: hidden;
+			} 
+
+			#ex {
+				position: fixed;
+				top: 40%;
+				left: 25%;
+			}
+
+			#modal-text {
+				font-size: 20px;
+				text-align: center;
+			}
+
+			#clear, #timeout {
+				font-size: 100px;
+				text-align: center;
+				margin: 40px 0 25px 0;
+				display: block;
+			}
+
+			#clear {
+				color: #00c853;
+			}
+
+			#timeout {
+				color: #dd2c00;
+			}
+
+			#button-container {
+				text-align: center;
+			}
+
+			#button-print, #button-solve {
+				margin: 30px 20px 10px 20px;
+				width: 100px;
+				height: 40px;
+				color: white;
+			}
+
+			#button-print {
+				background-color: #81d4fa;
+			}
+
+			#button-solve {
+				background-color: #ffe082
+			}
+
+			button {
+    			background: none;
+    			border: 0;
+    			color: inherit;
+    			line-height: normal;
+    			padding: 0;
+    			border-radius: 5px;
+                -webkit-appearance: button;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="./js/lib/jquery-1.10.2.min.js"></script>
+		<script src="./js/lib/jquery_modal.js"></script>
+		<script src="./js/lib/three.min.js"></script>
+		<script src="./js/object.js"></script>
+		<script src="./js/moveManager.js"></script>
+		<script src="./js/app.js"></script>
+
+		<div id="basic-scene" style="width:100vh; height:100vh; visibility: transparent">
+			<div id="modal">
+				<div id="ui-header">
+					<i class="fa fa-times" aria-hidden="true" style="position:absolute;top:1.5px;right:5px"onclick="closeModal()"></i>
+				</div>
+				<!-- <i id="clear" class="fa fa-check-circle-o" aria-hidden="true"></i>
+				<p id="modal-text">성공</p>
+				<div id="button-container">
+					<button href="#" id="button-print">파일 출력하기</button>
+					<button href="#" id="button-solve">다른 문제풀기</button>
+				</div> -->
+				<i id="timeout" class="fa fa-clock-o" aria-hidden="true"></i>
+				<p id="modal-text">시간 초과</p>
+				<div id="button-container">
+					<button href="#" id="button-print">파일 출력하기</button>
+					<button href="#" id="button-solve">다른 문제풀기</button>
+				</div>
+			</div>
+			<p id="ex"><a href="#modal" rel="modal:open">Open</a></p>
+			<a id="close" href="#" rel="modal:close" style="display: none;"></a>
+			<div id="setting-container" class="setting-container-option">
+				<p id="toggleShadowText">그림자 </p>
+				<div class="toggle">
+					<input type="checkbox" class="check" id="toggle" onclick="toggleSetting()">
+					<b class="b switch"></b>
+					<b class="b track"></b>
+				</div>
+			</div>
+			<div id="ui-container">
+				<div id="ui-header">
+					<i class="fa fa-cog" aria-hidden="true" style="position:absolute;top:1.5px;left:3px"onclick="toggleToggle()"></i>
+					<i class="fa fa-minus" aria-hidden="true" style="position:absolute;top:1.5px;right:5px"onclick="toggleUI(this)"></i>
+				</div>
+				<div id="object-container">
+					<div class="object"></div>
+					<div class="object"></div>
+					<div class="object"></div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+
+			function toggleToggle() {
+				$("#setting-container").toggleClass("setting-container-option");
+			}
+
+			function toggleSetting() {
+				if($("#toggle").prop("checked")) {
+					basicScene.setShadow(true);
+				} else {
+					basicScene.setShadow(false);
+				}
+			}
+
+			function toggleUI(div) {
+				if ($("#ui-container").height() == 20) {
+					$("#ui-container").height(150);
+					$(div).removeClass('fa-plus');
+					$(div).addClass('fa-minus');
+				} else {
+					$("#ui-container").height(20);
+					$(div).removeClass('fa-minus');
+					$(div).addClass('fa-plus');
+				}
+			}
+
+			function closeModal() {
+				$("#close").trigger("click");
+			}
+		</script>
+
+		<script>
+			$('#basic-scene').width(window.innerWidth)
+			$('#basic-scene').height(window.innerHeight)
+
+			//이거하면 resize할 때 마다 새로생겨서 아래에 차곡차곡 쌓임 알아서 지워줘
+			window.document.body.onresize = function() {
+				$('#basic-scene').width(window.innerWidth)
+				$('#basic-scene').height(window.innerHeight)
+			}
+
+			//IE를 지원하자
+			var agent = navigator.userAgent.toLowerCase();
+			if (navigator.appName == 'Netscape' && agent.indexOf('trident') != -1 || (agent.indexOf("msie") != -1)) {
+				window.document.body.style.overflow="hidden";
+				$("#ui-container").css("overflow", "hidden");
+			}
+
+			basicScene = new BasicScene().init();
+
+
+			// 오브젝트 넣기, 제거 요망
+			// basicScene.objects.push(new Object3D().init([
+			// 	[
+			// 		[1,1],
+			// 		[1,1]
+			// 	],
+			// 	[
+			// 		[1,1],
+			// 		[1,1]
+			// 	]
+			// ], 0x4DB6AC))
+	
+			basicScene.objects.push(new Object3D().init([
+				[
+					[1,1,1,1],
+					[1,0,0,0],
+					[0,0,0,0],
+					[0,0,0,0]
+				]
+			], 0x2196F3))
+
+			basicScene.objects.push(new Object3D().init([
+				[
+					[0,0,0,0],
+					[0,1,1,1],
+					[1,1,0,1],
+					[0,0,0,0]
+				]
+			], 0xE196F3))
+
+			basicScene.objects.push(new Object3D().init([
+				[
+					[0,0,0,0],
+					[0,0,0,0],
+					[0,0,1,0],
+					[1,1,1,1]
+				]
+			], 0xE19603))
+
+			// scene에도 넣어야지, 이거 함수를 따로 만들어야되나?
+			for (var i = 0; i<basicScene.objects.length; i++) {
+				basicScene.scene.add(basicScene.objects[i]);
+			}
+
+			function animate() {
+				basicScene.frame();
+				requestAnimationFrame(animate);
+	  	}
+	  	animate();
+
+	  		
+		</script>
+	</body>
+</html>
